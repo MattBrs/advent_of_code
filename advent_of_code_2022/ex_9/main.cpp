@@ -29,7 +29,8 @@ int main() {
     max_size = max(max_size, stoi(splitted_buffer[1]) + 1);
   }
 
-  vector<vector<bool>> visit_matrix(max_size, vector<bool>(max_size));
+  vector<vector<bool>> visit_matrix(max_size * 100,
+                                    vector<bool>(max_size * 100));
   // print_matrix(visit_matrix);
 
   cout << "moves: " << execute_moves(visit_matrix, moves) << endl;
@@ -79,29 +80,31 @@ int execute_moves(vector<vector<bool>> &matrix,
                   const vector<pair<string, int>> &moves) {
 
   int places_visited_count = 0;
-  int head_row = matrix.size() - 1;
-  int head_col = 0;
-  int tail_row = head_row;
-  int tail_col = head_col;
+
+  vector<pair<int, int>> rope_knots(10,
+                                    {(matrix.size()) / 2, (matrix.size()) / 2});
 
   for (auto move : moves) {
-    // cout << matrix[tail_row][tail_col] << endl;
-    // cout << tail_row << " " << tail_col << endl;
     for (int i = 0; i < move.second; ++i) {
-      // cout << tail_row << " " << tail_col << endl;
-      // print_matrix(matrix);
-      // cout << "moving: " << move.first << endl;
 
-      int old_head_row = head_row;
-      int old_head_col = head_col;
+      vector<pair<int, int>> old_pos = rope_knots;
+      int old_head_row = rope_knots[0].first;
+      int old_head_col = rope_knots[0].second;
 
-      move_to(head_col, head_row, move.first);
-      move_tail(head_col, head_row, tail_col, tail_row, old_head_col,
-                old_head_row);
+      move_to(rope_knots[0].second, rope_knots[0].first, move.first);
 
-      if (!matrix[tail_row][tail_col]) {
-        matrix[tail_row][tail_col] = true;
-        places_visited_count++;
+      for (int j = 0; j < rope_knots.size(); ++j) {
+
+        move_tail(rope_knots[j].second, rope_knots[j].first,
+                  rope_knots[j + 1].second, rope_knots[j + 1].first,
+                  old_pos[j].second, old_pos[j].first);
+
+        cout << "knot: " << j + 1 << " col: " << rope_knots[j + 1].second
+             << "  row: " << rope_knots[j + 1].first << endl;
+        if (!matrix[rope_knots[j + 1].first][rope_knots[j + 1].second]) {
+          matrix[rope_knots[j + 1].first][rope_knots[j + 1].second] = true;
+          places_visited_count++;
+        }
       }
     }
   }
