@@ -50,8 +50,9 @@ func main() {
 }
 
 func checkEdges(matrix [][]string, i int, j int) int {
-	sum := 0
+	sum := 1
 	numbers := make(map[int]bool)
+	countNumbers := 0
 
 	for k := i - 1; k < i+2; k++ {
 		for l := j - 1; l < j+2; l++ {
@@ -68,14 +69,19 @@ func checkEdges(matrix [][]string, i int, j int) int {
 				number, _ := strconv.Atoi(left + curr + right)
 				_, found := numbers[number]
 				if !found {
+					countNumbers++
 					numbers[number] = true
 				}
 			}
 		}
 	}
 
+	if countNumbers < 2 {
+		return 0
+	}
+
 	for item := range numbers {
-		sum += item
+		sum *= item
 	}
 
 	return sum
@@ -99,5 +105,5 @@ func seekRight(row []string, j int) string {
 
 func checkSymbol(char string) bool {
 	_, err := strconv.Atoi(char)
-	return err != nil && char != "."
+	return err != nil && char != "." && char == "*"
 }
