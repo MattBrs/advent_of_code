@@ -39,8 +39,8 @@ func main() {
 	sum := 0
 	for i := 1; i < size-1; i++ {
 		for j := 1; j < size-1; j++ {
-			if checkSymbol(matrix[i][j]) {
-				sum += checkEdges(matrix, i, j)
+			if isSymbol(matrix[i][j]) {
+				sum += calcEdges(matrix, i, j)
 			}
 		}
 	}
@@ -49,7 +49,7 @@ func main() {
 	file.Close()
 }
 
-func checkEdges(matrix [][]string, i int, j int) int {
+func calcEdges(matrix [][]string, i int, j int) int {
 	sum := 1
 	numbers := make(map[int]bool)
 	countNumbers := 0
@@ -88,7 +88,7 @@ func checkEdges(matrix [][]string, i int, j int) int {
 }
 
 func seekLeft(row []string, j int) string {
-	if j < 0 || checkSymbol(row[j]) || row[j] == "." {
+	if j < 0 || isSymbol(row[j]) || row[j] == "." {
 		return ""
 	}
 
@@ -96,14 +96,14 @@ func seekLeft(row []string, j int) string {
 }
 
 func seekRight(row []string, j int) string {
-	if j >= len(row) || checkSymbol(row[j]) || row[j] == "." {
+	if j >= len(row) || isSymbol(row[j]) || row[j] == "." {
 		return ""
 	}
 
 	return row[j] + seekRight(row, j+1)
 }
 
-func checkSymbol(char string) bool {
+func isSymbol(char string) bool {
 	_, err := strconv.Atoi(char)
 	return err != nil && char != "." && char == "*"
 }
